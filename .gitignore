@@ -1,0 +1,22 @@
+# Node
+node_modules/
+.next/
+dist/
+build/
+
+# Spring Boot
+target/
+
+# IDE
+.idea/
+.vscode/
+
+# Environment
+.env
+.env.local
+
+# TypeScript
+*.tsbuildinfo
+
+# Zip
+*.zip

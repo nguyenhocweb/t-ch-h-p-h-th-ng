@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  password  String
+  role      Role     @default(EMPLOYEE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  HR
+  EMPLOYEE
+}
+
+enum TrangThaiKyLuong {
+  DRAFT
+  OPEN
+  LOCKED
+  PAID
+  CLOSED
+}
+
+enum TrangThaiBangLuong {
+  DRAFT
+  CALCULATED
+  APPROVED
+  PAID
+  CANCEL
+}
+
+model KyLuong {
+  id                 String             @id @default(auto()) @map("_id") @db.ObjectId
+  tenKy              String
+  thang              Int
+  nam                Int
+  ngayTraLuong       DateTime
+  soNgayCongChuan    Float              @default(20.0)
+  trangThai          TrangThaiKyLuong   @default(DRAFT)
+  
+  bangLuongs         BangLuong[]
+  
+  ngayTao            DateTime           @default(now())
+  ngayCapNhat        DateTime           @updatedAt
+}
+
+model BangLuong {
+  id                String             @id @default(auto()) @map("_id") @db.ObjectId
+  nhanVienId        String             // External Key (Mã định danh từ hệ thống Nhân sự)
+  
+  kyLuongId         String             @db.ObjectId
+  kyLuong           KyLuong            @relation(fields: [kyLuongId], references: [id], onDelete: Cascade)
+  
+  luongCoBan        Float              @default(0)
+  thanhTienTangCa   Float              @default(0)
+  
+  tongThuNhap       Float              @default(0)
+  thueThuNhap       Float              @default(0)
+  
+  trangThai         TrangThaiBangLuong @default(DRAFT)
+  
+  nguoiLap          String             @default("System")
+  ngayLap           DateTime           @default(now())
+  nguoiDuyet        String?
+  ngayDuyet         DateTime?
+  
+  ngayCapNhat       DateTime           @updatedAt
+
+  @@unique([nhanVienId, kyLuongId])
+}

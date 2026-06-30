@@ -1,0 +1,1 @@
+const fs = require('fs'); const file = 'd:/Payroll/frontend/src/app/(admin)/payroll/[id]/page.tsx'; let content = fs.readFileSync(file, 'utf8'); content = content.split('/api/').join('http://localhost:5000/api/'); fs.writeFileSync(file, content, 'utf8');
